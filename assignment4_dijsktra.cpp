@@ -7,6 +7,36 @@
 #include <climits>
 using namespace std;
 
+//Function to get the starting node from the user
+int getStartingNode() {
+    cout << "Please enter the starting node (0-5):";
+
+    int startingNode;
+    cin >> startingNode;
+
+    while (startingNode > 5 || startingNode < 0) {
+        cout << "ERROR: Please enter a number between 0 and 5:";
+        cin >> startingNode;
+    }
+
+    return startingNode;
+}
+
+//Function to get the ending node from the user
+int getEndingNode() {
+    cout << "\nPlease enter the ending node (0-5):";
+
+    int endingNode;
+    cin >> endingNode;
+
+    while (endingNode > 5 || endingNode < 0) {
+        cout << "ERROR: Please enter a number between 0 and 5:";
+        cin >> endingNode;
+    }
+
+    return endingNode;
+}
+
 //Function to find the vertex with the minumum distance value that have not been added to the shortest path tree
 int minimumDistance(int distance[], bool visitedList[]) {
     int minimum = INT_MAX;
@@ -23,17 +53,17 @@ int minimumDistance(int distance[], bool visitedList[]) {
 }
 
 //Function to output the solution
-void outputSolution(int distance[]) {
-    cout << "Vertex\t\tDistance from source vertex" << endl;
+void outputSolution(int distance[], int startingNode, int endingNode) {
+    char startingVertex = 65 + startingNode;
+    char endingVertex = 65 + endingNode;
 
-    for(int i = 0; i < 6; i++) { 
-        char str = 65 + i; 
-        cout << str << "\t\t\t" << distance[i] << endl;
-    }
+    cout << "\nStarting Vertex = " << startingVertex;
+    cout << "\nEnding Vertex = " << endingVertex;
+    cout << "\nDistance = " << distance[endingNode];
 }
 
 //Function that implements Dijsktra's Algorithm using an adjacency matrix representation of a graph
-void DijkstrasAlgorithm(int graph[6][6], int source) {
+void DijkstrasAlgorithm(int graph[6][6], int source, int destination) {
 
     //Array that will hold the minimum distance to each vertex
     int distance[6];
@@ -58,17 +88,20 @@ void DijkstrasAlgorithm(int graph[6][6], int source) {
         visitedList[m] = true;
 
         //Update the distance of the neighboring vertex
-        for(int k = 0; k<6; k++) {
-            if(!visitedList[k] && graph[m][k] && distance[m] != INT_MAX && distance[m] + graph[m][k] < distance[k])
-                distance[k] = distance[m] + graph[m][k];
+        for(int j = 0; j < 6; j++) {
+            if(!visitedList[j] && graph[m][j] && distance[m] != INT_MAX && distance[m] + graph[m][j] < distance[j])
+                distance[j] = distance[m] + graph[m][j];
         }
     }
 
-    outputSolution(distance);
+    outputSolution(distance, source, destination);
 }
 
 //Main driver for the program
 int main() {
+    int startingNode = getStartingNode();
+    int endingNode = getEndingNode();
+
     int graph[6][6] = {
         {0, 1, 2, 0, 0, 0},
         {1, 0, 0, 5, 1, 0},
@@ -78,6 +111,6 @@ int main() {
         {0, 0, 0, 2, 1, 0}
     };
     
-    DijkstrasAlgorithm(graph,0);
+    DijkstrasAlgorithm(graph, startingNode, endingNode);
     return 0;                           
 }
